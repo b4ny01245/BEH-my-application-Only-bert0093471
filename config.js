@@ -2,7 +2,7 @@
 // Add your OpenRouter API key from https://openrouter.io
 
 export const CONFIG = {
-  OPENROUTER_API_KEY: "sk-or-v1-YOUR_API_KEY_HERE",
+  OPENROUTER_API_KEY: "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",
   OPENROUTER_URL: "https://openrouter.io/api/v1/chat/completions",
   DEFAULT_MODEL: "claude-3-haiku",
   DB_NAME: "BEH",
