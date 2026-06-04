@@ -1,0 +1,12 @@
+{
+  "name": "beh-solo",
+  "version": "1.0.0",
+  "description": "BEH - Your AI Second Brain (Solo Edition)",
+  "scripts": {
+    "start": "python -m http.server 8000",
+    "deploy": "vercel"
+  },
+  "keywords": ["ai", "companion", "second-brain"],
+  "author": "You",
+  "license": "MIT"
+}

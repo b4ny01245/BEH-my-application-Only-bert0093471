@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BEH - Chat</title>
+  <link rel="stylesheet" href="css/global.css">
+  <link rel="stylesheet" href="css/chat.css">
+</head>
+<body>
+  <div class="chat-container">
+    <div class="chat-header">
+      <h1>🧠 BEH</h1>
+      <p>Your AI Second Brain</p>
+    </div>
+
+    <div id="messagesContainer" class="messages"></div>
+
+    <div class="input-area">
+      <textarea 
+        id="messageInput" 
+        placeholder="Type your message... (Shift+Enter for new line)"
+        rows="3"
+      ></textarea>
+      <button id="sendBtn">Send</button>
+    </div>
+
+    <div class="footer">
+      <a href="index.html">← Home</a>
+      <a href="memory.html">Profile</a>
+      <button id="clearChatBtn" class="footer-btn">🗑️ Clear Chat</button>
+    </div>
+  </div>
+
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>

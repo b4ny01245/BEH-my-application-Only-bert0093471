@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BEH - Profile</title>
+  <link rel="stylesheet" href="css/global.css">
+  <style>
+    .profile-container {
+      max-width: 600px;
+      margin: 40px auto;
+      padding: 20px;
+    }
+
+    .profile-container h1 {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      color: var(--primary);
+      font-weight: 600;
+    }
+
+    .form-group input,
+    .form-group textarea {
+      width: 100%;
+    }
+
+    .form-group small {
+      display: block;
+      margin-top: 5px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .button-group {
+      display: flex;
+      gap: 10px;
+      margin-top: 30px;
+      flex-wrap: wrap;
+    }
+
+    .button-group button {
+      flex: 1;
+      min-width: 150px;
+    }
+
+    .reset-btn {
+      background: #dc2626;
+      color: white;
+    }
+
+    .reset-btn:hover {
+      background: #991b1b;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+      flex-wrap: wrap;
+    }
+
+    .nav-links a {
+      display: inline-block;
+      padding: 10px 20px;
+      background: var(--surface);
+      border-radius: 8px;
+      text-decoration: none;
+      border: 1px solid var(--primary);
+    }
+
+    .nav-links a:hover {
+      background: var(--primary);
+      color: white;
+      text-decoration: none;
+    }
+
+    .status {
+      margin-top: 20px;
+      padding: 15px;
+      border-radius: 8px;
+      text-align: center;
+      display: none;
+    }
+
+    .status.show {
+      display: block;
+    }
+
+    .status.success {
+      background: rgba(16, 185, 129, 0.2);
+      color: var(--success);
+      border: 1px solid var(--success);
+    }
+
+    .status.error {
+      background: rgba(239, 68, 68, 0.2);
+      color: var(--danger);
+      border: 1px solid var(--danger);
+    }
+  </style>
+</head>
+<body>
+  <div class="profile-container">
+    <h1>👤 My Profile</h1>
+    
+    <form id="profileForm">
+      <div class="form-group">
+        <label for="name">Your Name</label>
+        <input 
+          type="text" 
+          id="name" 
+          placeholder="e.g., Alex"
+          required
+        >
+        <small>How should BEH address you?</small>
+      </div>
+
+      <div class="form-group">
+        <label for="goals">Goals (comma-separated)</label>
+        <textarea 
+          id="goals" 
+          rows="2"
+          placeholder="e.g., Build AI app, Learn Vue, Get fit"
+        ></textarea>
+        <small>What are you working towards?</small>
+      </div>
+
+      <div class="form-group">
+        <label for="projects">Current Projects (comma-separated)</label>
+        <textarea 
+          id="projects" 
+          rows="2"
+          placeholder="e.g., BEH app, Side project, Learning course"
+        ></textarea>
+        <small>What are you building or working on?</small>
+      </div>
+
+      <div class="form-group">
+        <label for="skills">Skills (comma-separated)</label>
+        <textarea 
+          id="skills" 
+          rows="2"
+          placeholder="e.g., JavaScript, Design, Product, Python"
+        ></textarea>
+        <small>What are you good at?</small>
+      </div>
+
+      <div class="button-group">
+        <button type="submit">💾 Save Profile</button>
+        <button type="button" onclick="location.href='index.html'">← Back</button>
+        <button type="button" id="resetButton" class="reset-btn">🔄 Reset All</button>
+      </div>
+    </form>
+
+    <div id="status" class="status"></div>
+
+    <div class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="chat.html">Chat</a>
+    </div>
+  </div>
+
+  <script type="module">
+    import { db } from "./js/db.js";
+
+    const form = document.getElementById("profileForm");
+    const status = document.getElementById("status");
+    const resetBtn = document.getElementById("resetButton");
+
+    // Show message
+    function showStatus(message, type = "success") {
+      status.textContent = message;
+      status.className = `status show ${type}`;
+      setTimeout(() => {
+        status.classList.remove("show");
+      }, 3000);
+    }
+
+    // Save form
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      try {
+        await db.init();
+
+        const profile = {
+          name: document.getElementById("name").value,
+          goals: document.getElementById("goals").value
+            .split(",")
+            .map(s => s.trim())
+            .filter(s => s),
+          projects: document.getElementById("projects").value
+            .split(",")
+            .map(s => s.trim())
+            .filter(s => s),
+          skills: document.getElementById("skills").value
+            .split(",")
+            .map(s => s.trim())
+            .filter(s => s),
+          updatedAt: Date.now()
+        };
+
+        await db.setMemory("facts", profile);
+        showStatus("✅ Profile saved! BEH will use this to personalize conversations.", "success");
+      } catch (error) {
+        console.error("Error:", error);
+        showStatus("❌ Error saving profile: " + error.message, "error");
+      }
+    });
+
+    // Reset button with confirmation
+    resetBtn.addEventListener("click", async () => {
+      const confirmed = confirm(
+        "⚠️ This will delete ALL data:\n\n" +
+        "- Chat history\n" +
+        "- Profile\n" +
+        "- Reflections\n" +
+        "- All saved information\n\n" +
+        "This cannot be undone. Are you sure?"
+      );
+
+      if (!confirmed) return;
+
+      const finalConfirm = confirm(
+        "🔄 Final confirmation: Delete everything?\n\n" +
+        "This will reset BEH completely."
+      );
+
+      if (!finalConfirm) return;
+
+      try {
+        await db.init();
+        await db.resetAll();
+        
+        showStatus("✅ All data has been reset!", "success");
+        setTimeout(() => {
+          // Reload page to reflect changes
+          location.reload();
+        }, 1500);
+      } catch (error) {
+        console.error("Error resetting data:", error);
+        showStatus("❌ Error resetting data: " + error.message, "error");
+      }
+    });
+
+    // Load existing profile
+    async function loadProfile() {
+      try {
+        await db.init();
+        const profile = await db.getMemory("facts");
+        
+        if (profile) {
+          document.getElementById("name").value = profile.name || "";
+          document.getElementById("goals").value = profile.goals?.join(", ") || "";
+          document.getElementById("projects").value = profile.projects?.join(", ") || "";
+          document.getElementById("skills").value = profile.skills?.join(", ") || "";
+        }
+      } catch (error) {
+        console.error("Error loading profile:", error);
+      }
+    }
+
+    document.addEventListener("DOMContentLoaded", loadProfile);
+  </script>
+</body>
+</html>
