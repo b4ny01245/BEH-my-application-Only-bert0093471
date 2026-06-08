@@ -1,5 +1,5 @@
 // Talk to OpenRouter API
-import { CONFIG } from "../config.js";
+import { CONFIG } from "./config.js";
 
 export class BEHChat {
   async chat(messages, systemPrompt = null) {
