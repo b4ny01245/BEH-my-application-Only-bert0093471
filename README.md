@@ -6,7 +6,6 @@
 ![Platform](https://img.shields.io/badge/Platform-Web-blue)
 ![Storage](https://img.shields.io/badge/Storage-IndexedDB-orange)
 ![AI](https://img.shields.io/badge/AI-OpenRouter-purple)
-![License](https://img.shields.io/badge/License-Proprietary-red)
 
 ---
 
